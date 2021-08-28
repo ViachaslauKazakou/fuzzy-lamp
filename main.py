@@ -55,18 +55,11 @@ def add_data(filedata, session, record):
         session.add(form)
 
 
-def save_form_to_db(filedata, record):
+def save_form_to_db(record):
     try:
         engine = DbConnect(DB_STRING).init_app()
         Session = sessionmaker(bind=engine)
         session = Session()
-        # form = Form()
-        # form.first_name = filedata.get('first_name')
-        # form.last_name = filedata.get('last_name')
-        # form.origin_doc_link = filedata.get('origin_doc_link')
-        # form.description = filedata.get('description')
-        # form.fields_config = filedata.get('fields_config')
-        # session.add(form)
         add_data(filedata, session, record)
         session.commit()
         session.close()
@@ -74,10 +67,9 @@ def save_form_to_db(filedata, record):
     except Exception as err:
         print(err)
 
-
-# @timer
+@timer
 def start(record):
-    save_form_to_db(filedata,record)
+    save_form_to_db(record)
 
 
 def record_count():
@@ -89,23 +81,24 @@ def record_count():
     return rows
 
 
+@timer
+def start_pool(num_proc, record):
+    rec_pool = int(record/num_proc)
+    print([rec_pool]*num_proc)
+    with Pool(processes=num_proc) as proc:
+        proc.map(save_form_to_db, [rec_pool]*num_proc)
+
+
 if __name__ == '__main__':
-    print(record_count())
-    ts = time.time()
-    with Pool(processes=5) as p:
-        p.map(start, [5000,5000,5000,5000,5000])
-    tf = time.time() - ts
-    print("add 25000 records")
-    print("-"* 120)
-    print(f"Execution time with 5 process: {tf}")
-    print("++++")
-    print(record_count())
-    ts = time.time()
-    start(25000)
-    tf = time.time() - ts
-    print("-"* 120)
-    print(f"Execution time without multiprocessing: {tf}")
-    print("+"* 120)
-    print(record_count())
+    record = 25000
+    proc = 5
+    print(f"Records: {record_count()}, start populate with multi processes")
+    start_pool(proc, record)
+    print(f"added {record} records")
+    print("-" * 120)
+    print(f"Records: {record_count()}, start populate without processes")
+    start(record)
+    print("+" * 120)
+    print(f"Records: {record_count()}")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

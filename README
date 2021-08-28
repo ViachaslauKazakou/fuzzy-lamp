@@ -1,4 +1,9 @@
 1. docker-compose build
 2. docker-compose up -d
+Create venv for local ctart script
 3. alembic upgrade heads
+How to start
+num_proc - How many processes you wil use
+record - count of records will be  popelate to DB
 3. run main.py
+

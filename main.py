@@ -93,19 +93,19 @@ if __name__ == '__main__':
     print(record_count())
     ts = time.time()
     with Pool(processes=5) as p:
-        p.map(start, [5000,5000,5000,5000,5000,5000])
+        p.map(start, [5000,5000,5000,5000,5000])
     tf = time.time() - ts
     print("add 25000 records")
-    print("-----")
+    print("-"* 120)
     print(f"Execution time with 5 process: {tf}")
     print("++++")
     print(record_count())
     ts = time.time()
     start(25000)
     tf = time.time() - ts
-    print("-----")
+    print("-"* 120)
     print(f"Execution time without multiprocessing: {tf}")
-    print("++++")
+    print("+"* 120)
     print(record_count())
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

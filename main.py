@@ -88,7 +88,6 @@ def start_pool(num_proc, record):
     with Pool(processes=num_proc) as proc:
         proc.map(save_form_to_db, [rec_pool]*num_proc)
 
-
 if __name__ == '__main__':
     record = 25000
     proc = 5
